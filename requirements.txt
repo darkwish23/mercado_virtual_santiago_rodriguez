@@ -1,0 +1,4 @@
+Flask>=3.0,<4.0
+para abrirlo en servidor
+py app.py
+Pillow>=10.0.0

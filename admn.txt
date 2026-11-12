@@ -1,0 +1,13 @@
+Tipo de cuenta: Administrador
+
+
+
+Correo: admin@mercadocampesino.local
+
+
+
+Contraseña: AdminYopal2026!
+
+
+
+Panel: /administracion
