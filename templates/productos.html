@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% block title %}Productos | Mercado Campesino Digital · Yopal{% endblock %}
+{% block head %}
+<link rel="preload" as="image" href="{{ url_for('static', filename='img/portada-productos.webp') }}" fetchpriority="high">
+{% endblock %}
+{% block content %}
+<section class="page-hero page-hero-products page-hero-with-image">
+  <div class="page-hero-content">
+    <div class="eyebrow"><span></span> CATÁLOGO SEMANAL</div>
+    <h1>Lo bueno de nuestra tierra, <i>en tu mercado.</i></h1>
+    <p>Explora productos de temporada ofrecidos por familias campesinas de Yopal. Agrega tus favoritos y prepara tu reserva.</p>
+    <div class="page-hero-note"><span>◷</span> Puedes reservar hasta el viernes a las 6:00 p. m.</div>
+  </div>
+  <div class="products-hero-photo">
+    <img src="{{ url_for('static', filename='img/portada-productos.webp') }}"
+         alt="Frutas y verduras frescas del mercado campesino de Yopal"
+         width="900" height="600" loading="eager" fetchpriority="high" decoding="async">
+    <div class="products-photo-caption"><b>Directamente del campo</b><span>Frescura y calidad de nuestra región</span></div>
+  </div>
+</section>
+
+<section class="content-section catalog-section">
+  <div class="catalog-toolbar">
+    <div class="catalog-heading">
+      <div class="eyebrow">ENCUENTRA LO QUE BUSCAS</div>
+      <h2>Catálogo de productos</h2>
+      <p class="catalog-count" id="catalog-count" aria-live="polite">{{ products|length }} productos para descubrir</p>
+    </div>
+
+    <div class="catalog-filters" role="search">
+      <label class="search-field">
+        <span aria-hidden="true">⌕</span>
+        <input id="search" type="search" placeholder="Buscar producto o productor..." aria-label="Buscar producto o productor" autocomplete="off">
+      </label>
+
+      <label class="select-field">
+        <span class="sr-only">Filtrar por categoría</span>
+        <select id="category" aria-label="Filtrar por categoría">
+          <option value="all">Todas las categorías</option>
+          {% for category in categories %}
+          <option value="{{ category }}">{{ category }}</option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <label class="select-field sort-field">
+        <span class="sr-only">Ordenar productos</span>
+        <select id="sort" aria-label="Ordenar productos">
+          <option value="featured">Orden recomendado</option>
+          <option value="name-asc">Nombre: A a Z</option>
+          <option value="price-asc">Precio: menor a mayor</option>
+          <option value="price-desc">Precio: mayor a menor</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="catalog-status-row">
+    <span><span class="catalog-status-dot"></span> Productos de productores locales</span>
+    <button class="catalog-reset" id="clear-filters" type="button">Limpiar filtros</button>
+  </div>
+
+  <div class="product-grid catalog-grid" id="products">
+    {% for product in products %}
+      {% include 'partials/product_card.html' %}
+    {% endfor %}
+  </div>
+
+  <div class="empty-state" id="empty-state" hidden>
+    <span aria-hidden="true">⌕</span>
+    <h3>No encontramos productos</h3>
+    <p>Prueba con otro nombre o cambia la categoría seleccionada.</p>
+    <button class="button button-outline" id="empty-clear-filters" type="button">Ver todos los productos</button>
+  </div>
+
+  <section class="cart-panel" aria-label="Resumen de reserva">
+    <div class="cart-panel-copy">
+      <div class="cart-icon"><img src="{{ url_for('static', filename='img/cart.svg') }}" alt="" class="cart-svg" width="32" height="32"></div>
+      <div class="cart-panel-information">
+        <b>Tu selección</b>
+        <p id="cart-summary">Aún no has agregado productos.</p>
+        <div class="cart-items-list" id="cart-items-list" aria-live="polite"></div>
+      </div>
+    </div>
+    <div class="cart-panel-action">
+      <div class="cart-total-wrap"><small>Total estimado</small><span id="cart-total" class="cart-total">$0</span></div>
+      <button class="button button-dark" id="reserve-btn" type="button" disabled>Continuar reserva <span>→</span></button>
+    </div>
+  </section>
+
+  <p class="catalog-disclaimer">Los productos y precios de esta versión son datos de demostración. La disponibilidad puede variar según la cosecha semanal.</p>
+</section>
+
+<dialog id="reserve-dialog" class="reserve-dialog">
+  <form id="reservation-form">
+    <button class="dialog-close" type="button" aria-label="Cerrar">×</button>
+    <div class="eyebrow">UN ÚLTIMO PASO</div>
+    <h2>Confirma tu <i>reserva.</i></h2>
+    <p class="dialog-intro">Revisa tu selección y déjanos tus datos de contacto.</p>
+    <div id="dialog-items" class="dialog-items"></div>
+    <div class="form-grid">
+      <label>Nombre completo<input name="name" required maxlength="100" placeholder="¿Cómo te llamas?" value="{{ current_user.name if current_user else '' }}"></label>
+      <label>Teléfono de contacto<input name="phone" required type="tel" maxlength="30" placeholder="300 000 0000" value="{{ current_user.phone if current_user else '' }}"></label>
+      <label class="full-field">Observaciones <span>(opcional)</span><textarea name="notes" maxlength="500" placeholder="Alguna indicación para tu pedido..."></textarea></label>
+    </div>
+    <button class="button button-dark dialog-submit" id="submit-reservation" type="submit">Confirmar reserva <span>↗</span></button>
+    <small class="privacy-note">Tus datos se usarán únicamente para gestionar esta reserva de demostración.</small>
+  </form>
+</dialog>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='products.js') }}" defer></script>{% endblock %}

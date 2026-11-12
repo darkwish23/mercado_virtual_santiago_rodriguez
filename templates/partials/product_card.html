@@ -1,0 +1,37 @@
+<article class="product-card"
+         data-product-id="{{ product.id }}"
+         data-name="{{ product.name|lower }}"
+         data-search="{{ product.name }} {{ product.category }} {{ product.producer }} {{ product.place }}"
+         data-category="{{ product.category }}">
+  <div class="product-art {{ product.tone }}{% if product.image %} has-photo{% endif %}">
+    {% if product.image %}
+      <img src="{{ url_for('static', filename='img/' ~ product.image) }}"
+           alt="{{ product.name }}"
+           class="product-photo"
+           loading="eager"
+           decoding="async"
+           width="600" height="450">
+      <span class="product-emoji product-image-fallback" hidden>{{ product.emoji }}</span>
+    {% else %}
+      <span class="product-emoji">{{ product.emoji }}</span>
+    {% endif %}
+    <span class="product-tag">{{ product.tag }}</span>
+    {% if not product.image %}<span class="art-sparkle">✳</span>{% endif %}
+  </div>
+
+  <div class="product-details">
+    <div class="product-meta">
+      <span>{{ product.category }}</span>
+      <span class="fresh-dot">DISPONIBLE</span>
+    </div>
+    <h3>{{ product.name }}</h3>
+    <p class="product-origin">{{ product.producer }} · {{ product.place }}</p>
+    {% if product.description %}
+      <p class="product-description">{{ product.description }}</p>
+    {% endif %}
+    <div class="product-card-bottom">
+      <div class="price"><b>{{ money(product.price) }}</b><small>/ {{ product.unit }}</small></div>
+      <button class="add-button" type="button" data-add-product="{{ product.id }}" aria-label="Agregar {{ product.name }} al carrito">+</button>
+    </div>
+  </div>
+</article>

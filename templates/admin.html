@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Administración | Mercado Campesino Digital · Yopal{% endblock %}
+{% block content %}
+<section class="account-page admin-page">
+  <div class="account-heading">
+    <div>
+      <span class="eyebrow">CENTRO DE CONTROL · ACCESO PRIVADO</span>
+      <h1>Hola, <i>{{ user.name.split(' ')[0] }}.</i></h1>
+      <p>Desde aquí puedes revisar las reservas y las solicitudes de nuevos productores.</p>
+    </div>
+    <span class="account-role-badge">Administrador</span>
+  </div>
+
+  <div class="admin-stats">
+    <article class="admin-stat-card"><span>RESERVAS RECIBIDAS</span><strong>{{ reservation_count }}</strong><small>Solicitudes de compra registradas</small></article>
+    <article class="admin-stat-card"><span>SOLICITUDES DE PRODUCTORES</span><strong>{{ application_count }}</strong><small>Personas interesadas en participar</small></article>
+    <article class="admin-stat-card admin-stat-alert"><span>NOTIFICACIONES SIN LEER</span><strong>{{ unread_count }}</strong><small>Visibles únicamente para administración</small></article>
+  </div>
+
+  <section class="admin-section" id="notificaciones">
+    <div class="account-section-heading">
+      <div><span class="eyebrow">ACTIVIDAD RECIENTE</span><h2>Notificaciones</h2></div>
+      {% if unread_count %}
+      <form method="post" action="{{ url_for('admin_mark_notifications_read') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="admin-small-button" type="submit">Marcar todas como leídas</button>
+      </form>
+      {% endif %}
+    </div>
+    {% if notifications %}
+      <div class="admin-notification-list">
+        {% for notification in notifications %}
+          <article class="admin-notification-item {% if not notification.is_read %}unread{% endif %}">
+            <span class="admin-notification-symbol">{{ '🧺' if notification.kind == 'reserva' else '🌱' }}</span>
+            <div><b>{{ notification.message }}</b><small>{{ notification.created_at[:16].replace('T', ' ') }} · {{ 'Reserva' if notification.kind == 'reserva' else 'Solicitud de productor' }}</small></div>
+            {% if not notification.is_read %}<span class="admin-unread-dot" title="Sin leer"></span>{% endif %}
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="admin-empty">Todavía no hay notificaciones. Cuando llegue una reserva o una solicitud de productor, aparecerá aquí.</div>
+    {% endif %}
+  </section>
+
+  <section class="admin-section">
+    <div class="account-section-heading"><div><span class="eyebrow">PEDIDOS DE LOS COMPRADORES</span><h2>Reservas recibidas</h2></div><span class="account-count">{{ reservations|length }} recientes</span></div>
+    {% if reservations %}
+      <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Código / Fecha</th><th>Comprador</th><th>Productos</th><th>Contacto</th><th>Total estimado</th><th>Estado</th><th></th></tr></thead><tbody>
+      {% for reservation in reservations %}
+        <tr>
+          <td><b class="reservation-code">{{ reservation.code }}</b><small>{{ reservation.created_at[:16].replace('T', ' ') }}</small></td>
+          <td>{{ reservation.name }}</td>
+          <td><div class="admin-product-list">{% for item in reservation['items'] %}<span>{{ item['cantidad'] }} × {{ item['producto'] }}</span>{% endfor %}</div>{% if reservation.notes %}<small>Nota: {{ reservation.notes }}</small>{% endif %}</td>
+          <td>{{ reservation.phone }}</td>
+          <td><b>{{ money(reservation.total_estimated) }}</b></td>
+          <td><span class="admin-status">{{ reservation.status }}</span></td>
+          <td>{% if reservation.status != 'Revisada' %}<form method="post" action="{{ url_for('admin_update_status', kind='reserva', item_id=reservation.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="admin-small-button" type="submit">Marcar revisada</button></form>{% endif %}</td>
+        </tr>
+      {% endfor %}
+      </tbody></table></div>
+    {% else %}<div class="admin-empty">Aún no se han recibido reservas.</div>{% endif %}
+  </section>
+
+  <section class="admin-section">
+    <div class="account-section-heading"><div><span class="eyebrow">NUEVOS PRODUCTORES</span><h2>Solicitudes de participación</h2></div><span class="account-count">{{ applications|length }} recientes</span></div>
+    {% if applications %}
+      <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Fecha</th><th>Responsable</th><th>Finca / unidad</th><th>Teléfono</th><th>Productos</th><th>Vereda / sector</th><th>Estado</th><th></th></tr></thead><tbody>
+      {% for application in applications %}
+        <tr>
+          <td>{{ application.created_at[:16].replace('T', ' ') }}</td><td>{{ application.name }}</td><td>{{ application.farm }}</td><td>{{ application.phone }}</td><td>{{ application.products }}</td><td>{{ application.place }}</td>
+          <td><span class="admin-status">{{ application.status }}</span></td>
+          <td>{% if application.status != 'Revisada' %}<form method="post" action="{{ url_for('admin_update_status', kind='productor', item_id=application.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="admin-small-button" type="submit">Marcar revisada</button></form>{% endif %}</td>
+        </tr>
+      {% endfor %}
+      </tbody></table></div>
+    {% else %}<div class="admin-empty">Aún no hay solicitudes de productores.</div>{% endif %}
+  </section>
+</section>
+{% endblock %}

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#315b3b" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" role="img" aria-labelledby="title">
+  <title id="title">Carrito de compras</title>
+  <path d="M2.5 3h2l2.1 11.1a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 1.9-1.5L21 7H5.1"/>
+  <path d="M9 19.5h.01M18 19.5h.01" stroke-width="3"/>
+  <path d="M9 10v3M14 10v3"/>
+</svg>

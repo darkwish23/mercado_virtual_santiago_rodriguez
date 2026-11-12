@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Inicio | Mercado Campesino Digital · Yopal{% endblock %}
+{% block content %}
+<section class="home-hero">
+  <div class="hero-copy">
+    <div class="eyebrow"><span></span> MERCADO CAMPESINO DIGITAL · YOPAL</div>
+    <h1>Del campo<br>directo a <i>tu mesa.</i></h1>
+    <p class="hero-lead">Un espacio para acercar a las familias campesinas de Yopal con quienes valoran los alimentos frescos y el trabajo del campo.</p>
+    <div class="hero-actions">
+      <a class="button button-dark" href="{{ url_for('productos') }}">Ir a productos <span>↗</span></a>
+      <a class="button button-quiet" href="{{ url_for('como_funciona') }}">Conocer el proyecto <span>→</span></a>
+    </div>
+    <div class="hero-promise"><span class="promise-icon">✳</span><span><b>Compra local, fortalece lo nuestro</b><small>Una iniciativa para conectar a Yopal con su campo.</small></span></div>
+  </div>
+  <div class="hero-art hero-photo-wrap" aria-label="Fotografía de productos frescos del campo">
+    <img src="{{ url_for('static', filename='img/portada-campo.webp') }}" alt="Productos frescos del campo de Yopal" class="hero-photo" loading="eager" decoding="async">
+    <div class="art-label label-top"><span>✳</span> ORGULLO LOCAL</div>
+    <div class="art-label label-bottom"><b>Yopal, Casanare</b><small>El sabor de nuestra tierra</small></div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% block title %}Mi cuenta | Mercado Campesino Digital{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='profile-photo.js') }}" defer></script>
+{% endblock %}
+{% block content %}
+<section class="account-page">
+  <div class="account-heading">
+    <div>
+      <span class="eyebrow">{{ 'ESPACIO DE PERSONA COMPRADORA' if user.role == 'persona' else 'ESPACIO DE CAMPESINO PRODUCTOR' }}</span>
+      <h1>Hola, <i>{{ user.name.split(' ')[0] }}.</i></h1>
+      <p>Este es tu espacio personal en el Mercado Campesino Digital de Yopal.</p>
+    </div>
+    <div class="account-heading-side">
+      <span class="account-role-badge">{{ 'Persona compradora' if user.role == 'persona' else 'Campesino productor' }}</span>
+    </div>
+  </div>
+
+  {% if user.role == 'persona' %}
+    <div class="account-grid">
+      <article class="account-card account-profile-card">
+        <div class="profile-avatar-picker">
+          <button class="profile-avatar-trigger" id="profile-avatar-trigger" type="button" aria-label="Cambiar foto de perfil" title="Pasa el cursor para editar la foto">
+            {% if user.profile_photo %}
+              <img class="profile-photo-preview" src="{{ url_for('static', filename='uploads/profiles/' ~ user.profile_photo) }}" alt="Foto de perfil de {{ user.name }}">
+            {% else %}
+              <span class="profile-photo-placeholder">{{ user.name[:1]|upper }}</span>
+            {% endif %}
+            <span class="profile-avatar-edit" aria-hidden="true">✎</span>
+          </button>
+          <form class="profile-photo-form" id="profile-photo-form" method="post" action="{{ url_for('actualizar_foto_perfil') }}" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input id="profile-photo-input" class="profile-photo-input" type="file" name="profile_photo" accept=".jpg,.jpeg,.png,.webp,.gif,image/jpeg,image/png,image/webp,image/gif">
+            <input type="hidden" name="crop_x" id="profile-photo-crop-x" value="0">
+            <input type="hidden" name="crop_y" id="profile-photo-crop-y" value="0">
+            <input type="hidden" name="crop_size" id="profile-photo-crop-size" value="1">
+            <div class="profile-photo-modal" id="profile-photo-modal" hidden>
+              <div class="profile-photo-dialog" role="dialog" aria-modal="true" aria-labelledby="profile-photo-title">
+                <button class="profile-photo-close" id="profile-photo-close" type="button" aria-label="Cerrar">×</button>
+                <span class="eyebrow">MERCADO CAMPESINO DIGITAL</span>
+                <h2 id="profile-photo-title">Ajusta tu imagen</h2>
+                <p>Mueve la imagen dentro del círculo para elegir qué parte mostrar y ajusta el zoom.</p>
+                <div class="profile-photo-live-wrap" id="profile-photo-drag-area"><img id="profile-photo-live" alt="Vista previa de la foto de perfil"></div>
+                <div class="profile-photo-controls" id="profile-photo-controls"><label>Zoom <input type="range" id="profile-photo-zoom" min="1" max="3" step="0.05" value="1"></label></div>
+                <small id="profile-photo-hint">JPG, PNG, WEBP o GIF animado · Máximo 5 MB</small>
+                <button class="button button-dark profile-photo-save" id="profile-photo-save" type="submit" disabled>Guardar cambios</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <span class="eyebrow">MI PERFIL</span>
+        <h2>Mis datos</h2>
+        <dl class="account-details">
+          <div><dt>Nombre</dt><dd>{{ user.name }}</dd></div>
+          <div><dt>Correo</dt><dd>{{ user.email }}</dd></div>
+          <div><dt>Teléfono</dt><dd>{{ user.phone }}</dd></div>
+        </dl>
+      </article>
+      <article class="account-card account-action-card">
+
+        <span class="eyebrow">SIGUE DISFRUTANDO LO LOCAL</span>
+        <h2>Explora el catálogo</h2>
+        <p>Descubre productos de temporada y prepara una reserva para recoger en la feria.</p>
+        <a class="button button-dark" href="{{ url_for('productos') }}">Ver productos <span>↗</span></a>
+      </article>
+    </div>
+
+    <section class="account-history">
+      <div class="account-section-heading"><div><span class="eyebrow">TU ACTIVIDAD</span><h2>Mis reservas</h2></div><span class="account-count">{{ user_reservations|length }} registradas</span></div>
+      {% if user_reservations %}
+        <div class="reservation-history-list">
+          {% for reservation in user_reservations %}
+            <article class="reservation-history-item">
+              <div><span class="reservation-code">{{ reservation.code }}</span><small>{{ reservation.created_at[:16].replace('T', ' ') }}</small></div>
+              <div class="reservation-history-products">{% for item in reservation.items %}<span>{{ item.cantidad }} × {{ item.producto }}</span>{% endfor %}</div>
+              <strong>{{ money(reservation.total_estimated) }}</strong>
+            </article>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="account-empty"><h3>Aún no tienes reservas</h3><p>Cuando confirmes una reserva desde el catálogo, aparecerá aquí.</p><a href="{{ url_for('productos') }}">Explorar productos →</a></div>
+      {% endif %}
+    </section>
+  {% else %}
+    <div class="account-grid">
+      <article class="account-card account-profile-card">
+        <div class="profile-avatar-picker">
+          <button class="profile-avatar-trigger" id="profile-avatar-trigger" type="button" aria-label="Cambiar foto de perfil" title="Pasa el cursor para editar la foto">
+            {% if user.profile_photo %}
+              <img class="profile-photo-preview" src="{{ url_for('static', filename='uploads/profiles/' ~ user.profile_photo) }}" alt="Foto de perfil de {{ user.name }}">
+            {% else %}
+              <span class="profile-photo-placeholder">{{ user.name[:1]|upper }}</span>
+            {% endif %}
+            <span class="profile-avatar-edit" aria-hidden="true">✎</span>
+          </button>
+          <form class="profile-photo-form" id="profile-photo-form" method="post" action="{{ url_for('actualizar_foto_perfil') }}" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input id="profile-photo-input" class="profile-photo-input" type="file" name="profile_photo" accept=".jpg,.jpeg,.png,.webp,.gif,image/jpeg,image/png,image/webp,image/gif">
+            <input type="hidden" name="crop_x" id="profile-photo-crop-x" value="0">
+            <input type="hidden" name="crop_y" id="profile-photo-crop-y" value="0">
+            <input type="hidden" name="crop_size" id="profile-photo-crop-size" value="1">
+            <div class="profile-photo-modal" id="profile-photo-modal" hidden>
+              <div class="profile-photo-dialog" role="dialog" aria-modal="true" aria-labelledby="profile-photo-title">
+                <button class="profile-photo-close" id="profile-photo-close" type="button" aria-label="Cerrar">×</button>
+                <span class="eyebrow">MERCADO CAMPESINO DIGITAL</span>
+                <h2 id="profile-photo-title">Ajusta tu imagen</h2>
+                <p>Mueve la imagen dentro del círculo para elegir qué parte mostrar y ajusta el zoom.</p>
+                <div class="profile-photo-live-wrap" id="profile-photo-drag-area"><img id="profile-photo-live" alt="Vista previa de la foto de perfil"></div>
+                <div class="profile-photo-controls" id="profile-photo-controls"><label>Zoom <input type="range" id="profile-photo-zoom" min="1" max="3" step="0.05" value="1"></label></div>
+                <small id="profile-photo-hint">JPG, PNG, WEBP o GIF animado · Máximo 5 MB</small>
+                <button class="button button-dark profile-photo-save" id="profile-photo-save" type="submit" disabled>Guardar cambios</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <span class="account-card-icon">🌱</span>
+        <span class="eyebrow">MI UNIDAD PRODUCTIVA</span>
+        <h2>{{ user.farm_name }}</h2>
+        <dl class="account-details">
+          <div><dt>Responsable</dt><dd>{{ user.name }}</dd></div>
+          <div><dt>Correo</dt><dd>{{ user.email }}</dd></div>
+          <div><dt>Teléfono</dt><dd>{{ user.phone }}</dd></div>
+          <div><dt>Vereda o sector</dt><dd>{{ user.place }}</dd></div>
+          <div><dt>Productos</dt><dd>{{ user.products }}</dd></div>
+        </dl>
+      </article>
+      <article class="account-card account-action-card">
+        <span class="account-card-icon">🧑‍🌾</span>
+        <span class="eyebrow">TU ESPACIO CAMPESINO</span>
+        <h2>Tu cuenta está creada</h2>
+        <p>Tu perfil ya está guardado. En esta versión académica, la publicación y edición de productos desde las cuentas campesinas todavía no está habilitada.</p>
+        <a class="button button-dark" href="{{ url_for('productores') }}">Ver productores <span>↗</span></a>
+      </article>
+    </div>
+    <section class="farmer-next-step"><span>✳</span><div><b>Tu siguiente paso</b><p>Verifica que los datos de tu finca y los productos que ofreces estén correctos. La información de este perfil es privada para tu sesión.</p></div></section>
+  {% endif %}
+</section>
+{% endblock %}

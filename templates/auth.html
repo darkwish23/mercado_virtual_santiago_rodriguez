@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block title %}{% if mode == 'login' %}Ingresar{% else %}Crear cuenta{% endif %} | Mercado Campesino Digital{% endblock %}
+{% block content %}
+<section class="auth-page">
+  <div class="auth-aside">
+    <span class="auth-kicker">MERCADO CAMPESINO DIGITAL · YOPAL</span>
+    <div class="auth-aside-icon" aria-hidden="true">✳</div>
+    <h1>{% if mode == 'login' %}Qué bueno tenerte <i>de vuelta.</i>{% else %}Conectemos tu cuenta con <i>el campo.</i>{% endif %}</h1>
+    <p>{% if mode == 'login' %}Ingresa como persona compradora, campesino productor o administrador para acceder a tu espacio.{% else %}Crea tu cuenta para reservar productos o presentar tu unidad productiva.{% endif %}</p>
+    <div class="auth-aside-note"><span>✓</span> Una comunidad que conecta a Yopal con sus productores.</div>
+  </div>
+
+  <div class="auth-card">
+    {% if mode == 'login' %}
+      <div class="auth-card-heading"><span class="eyebrow">BIENVENIDO/A</span><h2>Iniciar sesión</h2><p>Selecciona tu tipo de cuenta e ingresa tus datos.</p></div>
+      {% if error %}<div class="auth-alert" role="alert">{{ error }}</div>{% endif %}
+      <form method="post" action="{{ url_for('ingresar') }}" class="auth-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="next" value="{{ next_url }}">
+        <label>Tipo de cuenta
+          <select name="role" required>
+            <option value="persona">Persona compradora</option>
+            <option value="campesino">Campesino productor</option>
+            <option value="admin">Administrador</option>
+          </select>
+        </label>
+        <label>Correo electrónico
+          <input type="email" name="email" required autocomplete="email" maxlength="160" placeholder="tucorreo@ejemplo.com">
+        </label>
+        <label>Contraseña
+          <input type="password" name="password" required autocomplete="current-password" placeholder="Tu contraseña">
+        </label>
+        <button class="button button-dark auth-submit" type="submit">Ingresar a mi cuenta <span>↗</span></button>
+      </form>
+      <p class="auth-switch">¿Todavía no tienes cuenta? <a href="{{ url_for('registro') }}">Regístrate aquí</a></p>
+    {% else %}
+      <div class="auth-card-heading"><span class="eyebrow">ÚNETE A LA COMUNIDAD</span><h2>Crear cuenta</h2><p>Elige el tipo de cuenta que necesitas.</p></div>
+      {% if error %}<div class="auth-alert" role="alert">{{ error }}</div>{% endif %}
+      <form method="post" action="{{ url_for('registro') }}" class="auth-form" id="register-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label>Quiero registrarme como
+          <select name="role" id="account-role" required>
+            <option value="persona" {% if form_data.get('role', 'persona') == 'persona' %}selected{% endif %}>Persona compradora</option>
+            <option value="campesino" {% if form_data.get('role') == 'campesino' %}selected{% endif %}>Campesino productor</option>
+          </select>
+        </label>
+        <label>Nombre completo
+          <input name="name" required maxlength="100" autocomplete="name" value="{{ form_data.get('name', '') }}" placeholder="Tu nombre y apellido">
+        </label>
+        <label>Correo electrónico
+          <input type="email" name="email" required maxlength="160" autocomplete="email" value="{{ form_data.get('email', '') }}" placeholder="tucorreo@ejemplo.com">
+        </label>
+        <label>Teléfono
+          <input type="tel" name="phone" required maxlength="30" autocomplete="tel" value="{{ form_data.get('phone', '') }}" placeholder="300 000 0000">
+        </label>
+        <div id="farmer-fields" class="farmer-fields" {% if form_data.get('role', 'persona') != 'campesino' %}hidden{% endif %}>
+          <div class="auth-section-label">DATOS DE TU UNIDAD PRODUCTIVA</div>
+          <label>Nombre de la finca o unidad productiva
+            <input name="farm_name" maxlength="120" value="{{ form_data.get('farm_name', '') }}" placeholder="Nombre de tu finca">
+          </label>
+          <label>Vereda o sector
+            <input name="place" maxlength="120" value="{{ form_data.get('place', '') }}" placeholder="Ej. Morichal, La Manga">
+          </label>
+          <label>¿Qué cultivas u ofreces?
+            <input name="products" maxlength="120" value="{{ form_data.get('products', '') }}" placeholder="Ej. frutas, verduras, huevos">
+          </label>
+        </div>
+        <label>Contraseña <span class="auth-hint">Mínimo 8 caracteres</span>
+          <input type="password" name="password" required minlength="8" autocomplete="new-password" placeholder="Crea una contraseña">
+        </label>
+        <label>Confirmar contraseña
+          <input type="password" name="password_confirm" required minlength="8" autocomplete="new-password" placeholder="Escríbela nuevamente">
+        </label>
+        <button class="button button-dark auth-submit" type="submit">Crear mi cuenta <span>↗</span></button>
+      </form>
+      <p class="auth-legal">Al crear tu cuenta, tus datos se almacenan en la base de datos local de este prototipo.</p>
+      <p class="auth-switch">¿Ya tienes cuenta? <a href="{{ url_for('ingresar') }}">Inicia sesión</a></p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+(() => {
+  const role = document.getElementById('account-role');
+  const fields = document.getElementById('farmer-fields');
+  if (!role || !fields) return;
+  const farmerInputs = fields.querySelectorAll('input');
+  function updateFarmerFields() {
+    const isFarmer = role.value === 'campesino';
+    fields.hidden = !isFarmer;
+    farmerInputs.forEach(input => {
+      input.required = isFarmer;
+    });
+  }
+  role.addEventListener('change', updateFarmerFields);
+  updateFarmerFields();
+})();
+</script>
+{% endblock %}

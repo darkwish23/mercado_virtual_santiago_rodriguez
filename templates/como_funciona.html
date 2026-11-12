@@ -1,0 +1,286 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Cómo funciona | Mercado Campesino Digital · Yopal{% endblock %}
+
+{% block content %}
+
+<!-- PORTADA -->
+<section class="page-hero page-hero-how page-hero-with-image">
+
+  <div class="page-hero-content">
+    <div class="eyebrow">
+      <span></span> FÁCIL, CERCANO Y LOCAL
+    </div>
+
+    <h1>Comprar en el campo nunca fue <i>tan sencillo.</i></h1>
+
+    <p>
+      Conectamos tu mercado semanal con los productos de quienes cultivan
+      en nuestra región. Tú eliges, reservas y recoges.
+    </p>
+
+    <a class="button button-dark" href="{{ url_for('productos') }}">
+      Empezar a explorar <span>↗</span>
+    </a>
+  </div>
+
+  <div class="how-hero-photo">
+    <img
+      src="{{ url_for('static', filename='img/portada-como-funciona.webp') }}"
+      alt="Familias campesinas ofreciendo productos frescos"
+      loading="eager"
+      decoding="async"
+    >
+
+    <div class="how-photo-caption">
+      <b>Una conexión directa con el campo</b>
+      <span>Compra, reserva y recoge tu pedido.</span>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- PROCESO DE COMPRA -->
+<section class="content-section process-section">
+
+  <div class="section-intro centered-intro">
+    <div class="eyebrow">TU COMPRA EN 3 MOMENTOS</div>
+
+    <h2>De elegir a disfrutar, <i>así de simple.</i></h2>
+
+    <p>
+      Todo está pensado para que organices tu pedido antes de la feria.
+    </p>
+  </div>
+
+
+  <div class="process-grid">
+
+    <!-- PASO 1: EXPLORAR CATÁLOGO -->
+    <article class="process-card">
+
+      <div class="process-number">01</div>
+
+      <div class="process-icon">
+        <img
+          src="{{ url_for('static', filename='img/explorar-catalogo.svg') }}"
+          alt="Ilustración de explorar el catálogo"
+          width="90"
+          height="90"
+          loading="lazy"
+          decoding="async"
+        >
+      </div>
+
+      <h3>Explora el catálogo</h3>
+
+      <p>
+        Revisa los productos que las familias campesinas ofrecen durante
+        la semana. Consulta su presentación y precio.
+      </p>
+
+      <a href="{{ url_for('productos') }}">
+        Ver productos <span>→</span>
+      </a>
+
+    </article>
+
+
+    <!-- PASO 2: ARMAR RESERVA -->
+    <article class="process-card">
+
+      <div class="process-number">02</div>
+
+      <div class="process-icon">
+        <img
+          src="{{ url_for('static', filename='img/arma-reserva.svg') }}"
+          alt="Ilustración de armar una reserva"
+          width="90"
+          height="90"
+          loading="lazy"
+          decoding="async"
+        >
+      </div>
+
+      <h3>Arma tu reserva</h3>
+
+      <p>
+        Agrega los productos que quieras, indica tus datos de contacto
+        y confirma antes del viernes a las 6:00 p. m.
+      </p>
+
+      <a href="{{ url_for('productos') }}">
+        Hacer una reserva <span>→</span>
+      </a>
+
+    </article>
+
+
+    <!-- PASO 3: RECOGER EN LA FERIA -->
+    <article class="process-card">
+
+      <div class="process-number">03</div>
+
+      <div class="process-icon">
+        <img
+          src="{{ url_for('static', filename='img/recoge-feria.svg') }}"
+          alt="Ilustración de recoger el pedido en la feria"
+          width="90"
+          height="90"
+          loading="lazy"
+          decoding="async"
+        >
+      </div>
+
+      <h3>Recoge en la feria</h3>
+
+      <p>
+        El sábado, acércate al punto de encuentro de la feria y coordina
+        la recogida directamente con el productor.
+      </p>
+
+      <a href="#preguntas">
+        Ver detalles <span>→</span>
+      </a>
+
+    </article>
+
+  </div>
+
+</section>
+
+
+<!-- CRONOGRAMA -->
+<section class="timeline-section">
+
+  <div class="timeline-copy">
+    <div class="eyebrow eyebrow-light">TEN PRESENTE</div>
+
+    <h2>
+      Una semana para elegir.
+      <i>Un sábado para encontrarnos.</i>
+    </h2>
+
+    <p>
+      Organiza tu compra con tiempo y disfruta el encuentro con quienes
+      producen los alimentos de nuestra región.
+    </p>
+  </div>
+
+
+  <div class="timeline">
+
+    <div class="timeline-item">
+      <span class="timeline-day">LUNES A VIERNES</span>
+      <b>Elige y reserva</b>
+      <small>El catálogo está disponible durante la semana.</small>
+    </div>
+
+    <div class="timeline-item deadline">
+      <span class="timeline-day">VIERNES · 6:00 P. M.</span>
+      <b>Cierre de reservas</b>
+      <small>
+        Después de esta hora no se reciben pedidos para la jornada.
+      </small>
+    </div>
+
+    <div class="timeline-item">
+      <span class="timeline-day">SÁBADO</span>
+      <b>Recoge tu pedido</b>
+      <small>Encuentra al productor en la feria campesina.</small>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- PREGUNTAS FRECUENTES -->
+<section class="content-section faq-section" id="preguntas">
+
+  <div class="section-intro">
+    <div class="eyebrow">ANTES DE HACER TU PEDIDO</div>
+
+    <h2>Preguntas <i>frecuentes.</i></h2>
+
+    <p>
+      Algunos detalles importantes para que tu experiencia sea clara.
+    </p>
+  </div>
+
+
+  <div class="faq-list">
+
+    <details open>
+      <summary>
+        ¿Hasta cuándo puedo hacer una reserva?
+        <span>＋</span>
+      </summary>
+
+      <p>
+        Las reservas para la jornada semanal se reciben hasta el viernes
+        a las 6:00 p. m.
+      </p>
+    </details>
+
+
+    <details>
+      <summary>
+        ¿Dónde recojo mis productos?
+        <span>＋</span>
+      </summary>
+
+      <p>
+        La recogida se realiza el sábado en la feria campesina.
+        La coordinación específica se acuerda directamente con el productor.
+      </p>
+    </details>
+
+
+    <details>
+      <summary>
+        ¿Puedo pagar en línea?
+        <span>＋</span>
+      </summary>
+
+      <p>
+        Esta versión no procesa pagos en línea. El pago se acuerda
+        directamente con el productor al momento de la recogida.
+      </p>
+    </details>
+
+
+    <details>
+      <summary>
+        ¿Hacen domicilios?
+        <span>＋</span>
+      </summary>
+
+      <p>
+        No. El alcance de esta versión contempla reservas anticipadas
+        y recogida presencial en la feria.
+      </p>
+    </details>
+
+  </div>
+
+</section>
+
+
+<!-- LLAMADO A LA ACCIÓN -->
+<section class="bottom-cta">
+
+  <div>
+    <div class="eyebrow eyebrow-light">EL CAMPO TE ESPERA</div>
+    <h2>Tu próxima compra empieza aquí.</h2>
+  </div>
+
+  <a class="button button-white" href="{{ url_for('productos') }}">
+    Explorar el catálogo <span>↗</span>
+  </a>
+
+</section>
+
+{% endblock %}
